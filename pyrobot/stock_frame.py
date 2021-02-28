@@ -12,7 +12,7 @@ from pandas.core.window import Window
 class StockFrame():
 
     def __init__(self, data: List[Dict]) -> None:
-        """Initalizes the Stock Data Frame Object.
+        """Initializes the Stock Data Frame Object.
 
         Arguments:
         ----
