@@ -16,12 +16,12 @@ class Trade():
 
     Overview:
     ----
-    Reprsents the Trade Object which is used to create new trades,
+    Represents the Trade Object which is used to create new trades,
     add customizations to them, and easily modify existing content.
     """
 
     def __init__(self):
-        """Initalizes a new order."""
+        """Initializes a new order."""
 
         self.order = {}
         self.trade_id = ""
@@ -131,7 +131,7 @@ class Trade():
             self.order['stopPriceOffset'] = 0.00
             self.order['stopType'] = 'STANDARD'
 
-        # Make a refrence to the side we take, useful when adding other components.
+        # Make a reference to the side we take, useful when adding other components.
         self.enter_or_exit = enter_or_exit
         self.side = side
         self.order_type = order_type
@@ -323,7 +323,7 @@ class Trade():
         self.is_box_range = True
 
     def add_stop_loss(self, stop_size: float, percentage: bool = False) -> bool:
-        """Add's a stop loss order to exit the position when a certain loss is reached.
+        """Adds a stop loss order to exit the position when a certain loss is reached.
 
         Arguments:
         ----
@@ -384,7 +384,7 @@ class Trade():
         return True
 
     def add_stop_limit(self, stop_size: float, limit_size: float, stop_percentage: bool = False, limit_percentage: bool = False):
-        """Add's a Stop Limit Order to exit a trade when a stop price is reached but does not exceed the limit.
+        """Adds a Stop Limit Order to exit a trade when a stop price is reached but does not exceed the limit.
 
         Arguments:
         ----
@@ -532,7 +532,7 @@ class Trade():
         return round(price, 2)
 
     def add_take_profit(self, profit_size: float, percentage: bool = False) -> bool:
-        """Add's a Limit Order to exit a trade when a profit threshold is reached.
+        """Adds a Limit Order to exit a trade when a profit threshold is reached.
 
         Arguments:
         ----
@@ -597,7 +597,7 @@ class Trade():
         return True
 
     def add_one_cancels_other(self, orders: List[Dict] = None) -> Dict:
-        """Add's a One Cancel's Other Order
+        """Adds a One Cancels Other Order
 
         Arguments:
         ----
@@ -617,7 +617,7 @@ class Trade():
             }
         ]
         
-        # If we alread have a trigger than their are orders there.
+        # If we already have a trigger than their are orders there.
         if self._triggered_added:
 
             # Grab the old ones.
@@ -647,7 +647,7 @@ class Trade():
         if self.order and not self._triggered_added:
             self.order['orderStrategyType'] = 'TRIGGER'
 
-            # Trigger orders will have child strategies, so initalize that list.
+            # Trigger orders will have child strategies, so initialize that list.
             self.order['childOrderStrategies'] = []
 
             # Update the state.
@@ -768,8 +768,8 @@ class Trade():
             )
         else:
             # Insert it.
-            order_leg_colleciton: list = self.order['orderLegCollection']
-            order_leg_colleciton.insert(order_leg_id, leg)
+            order_leg_collection: list = self.order['orderLegCollection']
+            order_leg_collection.insert(order_leg_id, leg)
 
         return self.order['orderLegCollection']
 

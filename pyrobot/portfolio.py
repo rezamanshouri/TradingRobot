@@ -13,11 +13,11 @@ from td.client import TDClient
 class Portfolio():
 
     def __init__(self, account_number: Optional[str] = None) -> None:
-        """Initalizes a new instance of the Portfolio object.
+        """Initializes a new instance of the Portfolio object.
 
         Keyword Arguments:
         ----
-        account_number {str} -- An accout number to associate with the Portfolio. (default: {None})
+        account_number {str} -- An account number to associate with the Portfolio. (default: {None})
         """
 
         self.positions = {}
@@ -51,7 +51,7 @@ class Portfolio():
 
         Usage:
         ----
-            >>> # Define mutliple positions to add.
+            >>> # Define multiple positions to add.
             >>> multi_position = [
                 {
                     'asset_type': 'equity',
@@ -191,14 +191,14 @@ class Portfolio():
 
             >>> delete_status = Portfolio.delete_position(symbol='AAPL')
             >>> delete_status
-            (False, 'AAPL did not exist in the porfolio.')
+            (False, 'AAPL did not exist in the portfolio.')
         """
 
         if symbol in self.positions:
             del self.positions[symbol]
             return (True, "{symbol} was successfully removed.".format(symbol=symbol))
         else:
-            return (False, "{symbol} did not exist in the porfolio.".format(symbol=symbol))
+            return (False, "{symbol} did not exist in the portfolio.".format(symbol=symbol))
 
     def total_allocation(self) -> dict:
         """Returns a summary of the portfolio by asset allocation."""
@@ -208,7 +208,7 @@ class Portfolio():
             'fixed_income': [],
             'options': [],
             'futures': [],
-            'furex': []
+            'forex': []
         }
 
         if len(self.positions.keys()) > 0:
@@ -254,7 +254,7 @@ class Portfolio():
             self._grab_daily_historical_prices()
 
         # Calculate the weights.
-        porftolio_weights = self.portfolio_weights()
+        portfolio_weights = self.portfolio_weights()
 
         # Calculate the Daily Returns (%)
         self._stock_frame_daily.frame['daily_returns_pct'] = self._stock_frame_daily.symbol_groups['close'].transform(
@@ -287,7 +287,7 @@ class Portfolio():
         metrics_dict = {}
 
         portfolio_variance = self.portfolio_variance(
-            weights=porftolio_weights,
+            weights=portfolio_weights,
             covariance_matrix=returns_cov
         )
 
@@ -295,7 +295,7 @@ class Portfolio():
 
             symbol = index_tuple[0]
             metrics_dict[symbol] = {}
-            metrics_dict[symbol]['weight'] = porftolio_weights[symbol]
+            metrics_dict[symbol]['weight'] = portfolio_weights[symbol]
             metrics_dict[symbol]['average_returns'] = returns_avg[index_tuple]
             metrics_dict[symbol]['weighted_returns'] = returns_avg[index_tuple] * \
                 metrics_dict[symbol]['weight']
@@ -645,7 +645,7 @@ class Portfolio():
                 extended_hours=True
             )
 
-            # Loop through the chandles.
+            # Loop through the candles.
             for candle in historical_prices_response['candles']:
 
                 new_price_mini_dict = {}

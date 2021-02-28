@@ -25,7 +25,7 @@ milliseconds_since_epoch = TDUtilities().milliseconds_since_epoch
 class PyRobot():
 
     def __init__(self, client_id: str, redirect_uri: str, paper_trading: bool = True, credentials_path: str = None, trading_account: str = None) -> None:
-        """Initalizes a new instance of the robot and logs into the API platform specified.
+        """Initializes a new instance of the robot and logs into the API platform specified.
 
         Arguments:
         ----
@@ -44,7 +44,7 @@ class PyRobot():
 
         """
 
-        # Set the attirbutes
+        # Set the attributes
         self.trading_account = trading_account
         self.client_id = client_id
         self.redirect_uri = redirect_uri
@@ -74,7 +74,7 @@ class PyRobot():
         td_client = TDClient(
             client_id=self.client_id,
             redirect_uri=self.redirect_uri,
-            credentials_path=self.credentials_path
+            credentials_path=self.credentials_paths
         )
 
         # log the client into the new session
@@ -82,6 +82,8 @@ class PyRobot():
 
         return td_client
 
+    # TODO: this way of calculating pre/post market value is no ideal, eg. daylight saving and holidays is not taken into account
+    # Potential solution: https://developer.tdameritrade.com/market-hours/apis/get/marketdata/%7Bmarket%7D/hours
     @property
     def pre_market_open(self) -> bool:
         """Checks if pre-market is open.
@@ -126,7 +128,7 @@ class PyRobot():
             return False
 
     @property
-    def post_market_open(self):
+    def post_market_open(self) -> bool:
         """Checks if post-market is open.
 
         Uses the datetime module to create US Post-Market Equity hours in
@@ -169,7 +171,7 @@ class PyRobot():
             return False
 
     @property
-    def regular_market_open(self):
+    def regular_market_open(self) -> bool:
         """Checks if regular market is open.
 
         Uses the datetime module to create US Regular Market Equity hours in
@@ -233,7 +235,7 @@ class PyRobot():
         Portfolio -- A pyrobot.Portfolio object with no positions.
         """
 
-        # Initalize the portfolio.
+        # Initialize the portfolio.
         self.portfolio = Portfolio(account_number=self.trading_account)
 
         # Assign the Client
@@ -242,7 +244,7 @@ class PyRobot():
         return self.portfolio
 
     def create_trade(self, trade_id: str, enter_or_exit: str, long_or_short: str, order_type: str = 'mkt', price: float = 0.0, stop_limit_price=0.0) -> Trade:
-        """Initalizes a new instance of a Trade Object.
+        """Initializes a new instance of a Trade Object.
 
         This helps simplify the process of building an order by using pre-built templates that can be
         easily modified to incorporate more complex strategies.
@@ -252,15 +254,15 @@ class PyRobot():
         trade_id {str} -- The ID associated with the trade, this can then be used to access the trade during runtime.
 
         enter_or_exit {str} -- Defines whether this trade will be used to enter or exit a position.
-            If used to enter, specify `enter`. If used to exit, speicfy `exit`.
+            If used to enter, specify `enter`. If used to exit, specify `exit`.
 
         long_or_short {str} -- Defines whether this trade will be used to go long or short a position.
-            If used to go long, specify `long`. If used to go short, speicfy `short`.
+            If used to go long, specify `long`. If used to go short, specify `short`.
 
         Keyword Arguments:
         ----
-        order_type {str} -- Defines the type of order to initalize. Possible values
-            are `'mkt', 'lmt', 'stop', 'stop-lmt', 'trailign-stop'` (default: {'mkt'})
+        order_type {str} -- Defines the type of order to initialize. Possible values
+            are `'mkt', 'lmt', 'stop', 'stop-lmt', 'trailing-stop'` (default: {'mkt'})
 
         price {float} -- The Price to be associate with the order. If the order type is `stop` or `stop-lmt` then
             it is the stop price, if it is a `lmt` order then it is the limit price, and `mkt` is the market
@@ -317,7 +319,7 @@ class PyRobot():
         Trade -- A pyrobot.Trade object with the specified template.
         """
 
-        # Initalize a new trade object.
+        # Initialize a new trade object.
         trade = Trade()
 
         # Create a new trade.
@@ -339,7 +341,7 @@ class PyRobot():
         return trade
 
     def delete_trade(self, index: int) -> None:
-        """Deletes an exisiting trade from the `trades` collection.
+        """Deletes an existing trade from the `trades` collection.
 
         Arguments:
         ----
@@ -368,7 +370,7 @@ class PyRobot():
 
         Makes a call to the TD Ameritrade Get Quotes endpoint with all
         the positions in the portfolio. If only one position exist it will
-        return a single dicitionary, otherwise a nested dictionary.
+        return a single dictionary, otherwise a nested dictionary.
 
         Usage:
         ----
@@ -501,6 +503,7 @@ class PyRobot():
 
         for symbol in symbols:
 
+            # Shouldn't this be wrapped in a try-catch like the other usage? If so, a helper method could be helpful.
             historical_prices_response = self.session.get_price_history(
                 symbol=symbol,
                 period_type='day',
@@ -516,6 +519,7 @@ class PyRobot():
 
             for candle in historical_prices_response['candles']:
 
+                # TODO: question to self: why do we need to a "deep copy" here?
                 new_price_mini_dict = {}
                 new_price_mini_dict['symbol'] = symbol
                 new_price_mini_dict['open'] = candle['open']
@@ -812,7 +816,7 @@ class PyRobot():
 
         Returns:
         ----
-        {dict} -- An order response dicitonary.
+        {dict} -- An order response dictionary.
         """
 
         # Execute the order.
